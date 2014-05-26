@@ -1,6 +1,7 @@
 package backfire
 
 import (
+    "errors"
     r "github.com/christopherhesse/rethinkgo"
     "strconv"
 )
@@ -13,7 +14,9 @@ type Db struct {
 
 func MakeDb(host string, port int, name string) *Db {
 
-    return &Db{host, port, name}
+    db := &Db{host, port, name}
+    db.Init()
+    return db
 
 }
 
@@ -28,7 +31,7 @@ func (db *Db) GetTableSpec() r.TableSpec {
 
     return r.TableSpec{
         Name:       "maps",
-        PrimaryKey: "id",
+        PrimaryKey: "name",
     }
 
 }
@@ -81,4 +84,81 @@ func (db *Db) Init() (bool, error) {
     err = db.Create()
 
     return true, err
+}
+
+func (db *Db) Insert(cmap Map) (*r.WriteResponse, error) {
+
+    var session *r.Session
+    var err error
+
+    session, err = db.Connect()
+
+    if err != nil {
+        return nil, err
+    }
+
+    var response r.WriteResponse
+
+    err = r.Db(db.Name).Table("maps").Insert(cmap).Run(session).One(&response)
+
+    if err != nil {
+        return nil, err
+    } else {
+        return &response, nil
+    }
+
+}
+
+func (db *Db) GetByName(name string) (*Map, error) {
+
+    var session *r.Session
+    var err error
+
+    session, err = db.Connect()
+
+    if err != nil {
+        return nil, err
+    }
+
+    var cmap Map
+
+    err = r.Db(db.Name).Table("maps").Get(
+        name,
+    ).Run(session).One(&cmap)
+
+    if cmap.Name == "" {
+        return nil, errors.New("Name not found")
+    }
+
+    if err != nil {
+        return nil, err
+    }
+
+    return &cmap, nil
+
+}
+
+func (db *Db) GetByAuthorName(name string) ([]Map, error) {
+
+    var session *r.Session
+    var err error
+
+    session, err = db.Connect()
+
+    if err != nil {
+        return nil, err
+    }
+
+    var maps []Map
+
+    err = r.Db(db.Name).Table("maps").Filter(
+        r.Row.Attr("authorName").Eq(name),
+    ).Run(session).All(&maps)
+
+    if err != nil {
+        return nil, err
+    }
+
+    return maps, nil
+
 }

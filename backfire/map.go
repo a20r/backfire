@@ -18,15 +18,12 @@ type Obstacle struct {
 }
 
 type Map struct {
-    Name        string `json:name`
-    AuthorName  string `json:author_name`
-    AuthorEmail string `json:author_email`
-    Id          string `json:id`
-    Map         struct {
-        Width          int             `json:width`
-        Height         int             `json:height`
-        Depth          int             `json:depth`
-        Configurations []Configuration `json:configurations`
-        Obstacles      []Obstacle      `json:obstacles`
-    }   `json:map`
+    Name           string          `json:"name"`
+    AuthorName     string          `json:"authorName"`
+    AuthorEmail    string          `json:"authorEmail"`
+    Width          int             `json:"width"`
+    Height         int             `json:"height"`
+    Depth          int             `json:"depth"`
+    Configurations []Configuration `json:"configurations"`
+    Obstacles      []Obstacle      `json:"obstacles"`
 }
