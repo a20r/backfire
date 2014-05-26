@@ -37,7 +37,7 @@ func TestGetByName(t *testing.T) {
 
     log.Println("Testing GetByName")
 
-    test_name := "test"
+    test_name := "test1"
     db := ProduceDb()
     row, err := db.GetByName(test_name)
 
