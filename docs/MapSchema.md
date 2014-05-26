@@ -9,6 +9,7 @@ Documentation about the standard map description schema in JSON.
 		"name": <String -- Name of map>,
 		"author_name": <String -- Name of author>,
 		"author_email": <String -- Email of author>,
+		"id": <String -- Unique hash of entry>,
 		"map": {
 			"width": <Int -- Width of map>,
 			"height": <Int -- Height of map>,
