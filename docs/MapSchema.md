@@ -13,6 +13,19 @@ Documentation about the standard map description schema in JSON.
 			"width": <Int -- Width of map>,
 			"height": <Int -- Height of map>,
 			"depth": <Int -- Optional -- 3D depth of map>,
+			"configurations": [
+				{
+					"initial": {
+						"x": <Int -- X coordinate of initial configuration>,
+						"y": <Int -- Y coordinate of initial configuration>,
+						"z": <Int -- Optional -- Z coordinate of initial configuration>
+					},
+					"goal": {
+						"x": <Int -- X coordinate of goal configuration>,
+						"y": <Int -- Y coordinate of goal configuration>,
+						"z": <Int -- Optional -- Z coordinate of goal configuration>
+				}, …
+			]
 			"obstacles": [
 				{
 					"dynamic": <Boolean -- Whether obstacle is dynamic>,
@@ -22,9 +35,9 @@ Documentation about the standard map description schema in JSON.
 							"x": <Int -- X coordinate of vertex>,
 							"y": <Int-- Y coordinate of vertex>,
 							"z": <Int -- Optional -- Z coordinate of vertex>
-						}, ...
+						}, …
 					]
-				}, ...
+				}, …
 			] 	
 		}
 	}
