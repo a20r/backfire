@@ -20,19 +20,16 @@ func MakeDb(host string, port int, name string) *Db {
 
 }
 
+func (db *Db) GetTable(table_name string) r.Exp {
+
+    return r.Db(db.Name).Table(table_name)
+
+}
+
 func (db *Db) Connect() (*r.Session, error) {
 
     session, conn_err := r.Connect(db.Host+":"+strconv.Itoa(db.Port), db.Name)
     return session, conn_err
-
-}
-
-func (db *Db) GetTableSpec() r.TableSpec {
-
-    return r.TableSpec{
-        Name:       "maps",
-        PrimaryKey: "name",
-    }
 
 }
 
@@ -48,7 +45,10 @@ func (db *Db) Create() error {
     } else {
         err = r.DbCreate(db.Name).Run(session).Exec()
         err = r.Db(db.Name).TableCreateWithSpec(
-            db.GetTableSpec(),
+            r.TableSpec{
+                Name:       "maps",
+                PrimaryKey: "name",
+            },
         ).Run(session).Exec()
 
         if err != nil {
@@ -99,7 +99,7 @@ func (db *Db) Insert(cmap Map) (*r.WriteResponse, error) {
 
     var response r.WriteResponse
 
-    err = r.Db(db.Name).Table("maps").Insert(cmap).Run(session).One(&response)
+    err = db.GetTable("maps").Insert(cmap).Run(session).One(&response)
 
     if err != nil {
         return nil, err
@@ -122,9 +122,7 @@ func (db *Db) GetByName(name string) (*Map, error) {
 
     var cmap Map
 
-    err = r.Db(db.Name).Table("maps").Get(
-        name,
-    ).Run(session).One(&cmap)
+    err = db.GetTable("maps").Get(name).Run(session).One(&cmap)
 
     if cmap.Name == "" {
         return nil, errors.New("Name not found")
@@ -151,7 +149,7 @@ func (db *Db) GetByAuthorName(name string) ([]Map, error) {
 
     var maps []Map
 
-    err = r.Db(db.Name).Table("maps").Filter(
+    err = db.GetTable("maps").Filter(
         r.Row.Attr("authorName").Eq(name),
     ).Run(session).All(&maps)
 

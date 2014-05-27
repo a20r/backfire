@@ -2,7 +2,9 @@ package backfire
 
 import (
     "github.com/ant0ine/go-json-rest/rest"
+    r "github.com/christopherhesse/rethinkgo"
     "net/http"
+    "net/url"
     "strconv"
 )
 
@@ -35,6 +37,7 @@ func (bfs *BackfireServer) Start() {
     handler.SetRoutes(
         &rest.Route{"GET", "/maps/name/:name", bfs.GetMapByName},
         &rest.Route{"GET", "/maps/authorName/:name", bfs.GetMapByAuthorName},
+        &rest.Route{"POST", "/maps", bfs.PostMap},
     )
 
     http.ListenAndServe(bfs.Host+":"+strconv.Itoa(bfs.Port), &handler)
@@ -46,7 +49,7 @@ func (bfs *BackfireServer) GetMapByAuthorName(
     req *rest.Request,
 ) {
 
-    name := req.PathParam("name")
+    name, _ := url.QueryUnescape(req.PathParam("name"))
     maps, err := bfs.Database.GetByAuthorName(name)
 
     if err != nil {
@@ -63,7 +66,7 @@ func (bfs *BackfireServer) GetMapByName(
     req *rest.Request,
 ) {
 
-    name := req.PathParam("name")
+    name, _ := url.QueryUnescape(req.PathParam("name"))
     maps, err := bfs.Database.GetByName(name)
 
     if err != nil {
@@ -75,5 +78,32 @@ func (bfs *BackfireServer) GetMapByName(
     }
 
     w.WriteJson(maps)
+
+}
+
+func (bfs *BackfireServer) PostMap(
+    w rest.ResponseWriter,
+    req *rest.Request,
+) {
+
+    var err error
+    var post_map Map
+    var db_response *r.WriteResponse
+
+    err = req.DecodeJsonPayload(&post_map)
+
+    if err != nil {
+        rest.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    db_response, err = bfs.Database.Insert(post_map)
+
+    if err != nil {
+        rest.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    w.WriteJson(db_response)
 
 }

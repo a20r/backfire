@@ -14,15 +14,8 @@ Documentation about the standard map description schema in JSON.
 		"depth": <Int -- Optional -- 3D depth of map>,
 		"configurations": [
 			{
-				"initial": {
-					"x": <Int -- X coordinate of initial configuration>,
-					"y": <Int -- Y coordinate of initial configuration>,
-					"z": <Int -- Optional -- Z coordinate of initial configuration>
-				},
-				"goal": {
-					"x": <Int -- X coordinate of goal configuration>,
-					"y": <Int -- Y coordinate of goal configuration>,
-					"z": <Int -- Optional -- Z coordinate of goal configuration>
+				"initial": <JSON Map -- For user to decide>,
+				"goal": <JSON Map -- For user to decide>
 			}, …
 		],
 		"obstacles": [

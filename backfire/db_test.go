@@ -1,7 +1,6 @@
 package backfire
 
 import (
-    "log"
     "testing"
 )
 
@@ -16,7 +15,6 @@ func ProduceDb() *Db {
 
 func TestInsert(t *testing.T) {
 
-    log.Println("Testing Insert and MakeDb")
     db := ProduceDb()
     sample_map := Map{
         Name:           "test1",
@@ -35,8 +33,6 @@ func TestInsert(t *testing.T) {
 
 func TestGetByName(t *testing.T) {
 
-    log.Println("Testing GetByName")
-
     test_name := "test1"
     db := ProduceDb()
     row, err := db.GetByName(test_name)
@@ -45,6 +41,20 @@ func TestGetByName(t *testing.T) {
         t.Fatalf(err.Error())
     }
 
-    log.Println(row)
+    t.Log(row)
+
+}
+
+func TestGetByAuthorName(t *testing.T) {
+
+    test_name := "Alex Wallar"
+    db := ProduceDb()
+    row, err := db.GetByAuthorName(test_name)
+
+    if err != nil {
+        t.Fatalf(err.Error())
+    }
+
+    t.Log(row)
 
 }
